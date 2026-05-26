@@ -2,11 +2,15 @@
 
 // 🎨 GoolPxl Brand Theme — Football documentary, cinematic style
 // Exact brand colors from goolpxl.com
-$cx-color-primary: #d4af37;     // Gold — main brand color
-$cx-color-secondary: #b8860b;   // Dark goldenrod — hover/active states
-$cx-color-text: #f5f5f5;        // Off-white text on dark backgrounds
-$cx-color-background: #0a0a0a;  // Near-black cinematic background
-$cx-color-background-secondary: #1a1a1a; // Card/section backgrounds
+// Override Spartacus theme variables BEFORE the @import
+$primary: #d4af37;       // Gold — main brand color
+$secondary: #b8860b;     // Dark goldenrod — hover/accent
+$success: #1a5d3a;       // Dark green
+$text: #f5f5f5;          // Off-white text
+$background: #0a0a0a;    // Near-black cinematic background
+$inverse: #1a1a1a;       // Card/section backgrounds
+$light: #2a2a2a;         // Borders, muted elements
+$dark: #0a0a0a;          // Darkest shade
 
 $styleVersion: 4.3;
 @import '~@spartacus/styles/index';

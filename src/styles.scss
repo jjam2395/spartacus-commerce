@@ -1,5 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
 
+// 🎨 GoolPxl Brand Theme — Football documentary, cinematic style
+$cx-color-primary: #10b981;  // Emerald green — primary brand color
+$cx-color-secondary: #059669; // Darker green — hover/active states
+$cx-color-text: #1a1a2e;      // Near-black for readability
+$cx-color-background: #0f0f1a; // Dark cinematic background
+
 $styleVersion: 4.3;
 @import '~@spartacus/styles/index';
-$cx-color-primary: #0ea5e9;

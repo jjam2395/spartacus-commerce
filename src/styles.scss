@@ -1,10 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 
 // 🎨 GoolPxl Brand Theme — Football documentary, cinematic style
-$cx-color-primary: #10b981;  // Emerald green — primary brand color
-$cx-color-secondary: #059669; // Darker green — hover/active states
-$cx-color-text: #1a1a2e;      // Near-black for readability
-$cx-color-background: #0f0f1a; // Dark cinematic background
+// Exact brand colors from goolpxl.com
+$cx-color-primary: #d4af37;     // Gold — main brand color
+$cx-color-secondary: #b8860b;   // Dark goldenrod — hover/active states
+$cx-color-text: #f5f5f5;        // Off-white text on dark backgrounds
+$cx-color-background: #0a0a0a;  // Near-black cinematic background
+$cx-color-background-secondary: #1a1a1a; // Card/section backgrounds
 
 $styleVersion: 4.3;
 @import '~@spartacus/styles/index';

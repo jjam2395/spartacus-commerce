@@ -1,0 +1,14 @@
+{
+    "/occ": {
+        "target": "https://composable-storefront-demo.eastus.cloudapp.azure.com:8443",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+    "/medias": {
+        "target": "https://composable-storefront-demo.eastus.cloudapp.azure.com:8443",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    }
+}

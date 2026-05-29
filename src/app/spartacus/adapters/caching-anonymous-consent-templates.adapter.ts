@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import {
@@ -16,16 +15,19 @@ import {
  * the OCC adapter with an in-memory cache + TTL so the API is called at most
  * once per TTL window instead of dozens of times per page load.
  *
+ * NOTE: This class is NOT an @Injectable() — it is instantiated by a factory
+ * provider (see app.module.ts) to avoid Angular DI circular resolution issues
+ * with the abstract AnonymousConsentTemplatesAdapter token.
+ *
  * PRODUCTION PATTERN: In a real project you could:
  *   - Increase TTL to 30m or 1h
  *   - Persist to localStorage so the cache survives page refreshes
  *   - Invalidate on explicit user actions (e.g., consent dialog submission)
  *   - Use a config-driven TTL via Spartacus config injection
  */
-@Injectable({
-  providedIn: 'root',
-})
-export class CachingAnonymousConsentTemplatesAdapter extends AnonymousConsentTemplatesAdapter {
+export class CachingAnonymousConsentTemplatesAdapter
+  extends AnonymousConsentTemplatesAdapter
+{
   private templatesCache: ConsentTemplate[] | null = null;
   private consentsCache: AnonymousConsent[] | null = null;
   private templatesCachedAt = 0;
@@ -35,7 +37,7 @@ export class CachingAnonymousConsentTemplatesAdapter extends AnonymousConsentTem
   // consent templates change in your SAP Commerce backend.
   private readonly TTL = 5 * 60 * 1000;
 
-  constructor(private occAdapter: OccAnonymousConsentTemplatesAdapter) {
+  constructor(private delegate: OccAnonymousConsentTemplatesAdapter) {
     super();
   }
 
@@ -43,7 +45,7 @@ export class CachingAnonymousConsentTemplatesAdapter extends AnonymousConsentTem
     if (this.templatesCache && this.isFresh(this.templatesCachedAt)) {
       return of(this.templatesCache);
     }
-    return this.occAdapter.loadAnonymousConsentTemplates().pipe(
+    return this.delegate.loadAnonymousConsentTemplates().pipe(
       tap((templates) => {
         this.templatesCache = templates;
         this.templatesCachedAt = Date.now();
@@ -55,7 +57,7 @@ export class CachingAnonymousConsentTemplatesAdapter extends AnonymousConsentTem
     if (this.consentsCache && this.isFresh(this.consentsCachedAt)) {
       return of(this.consentsCache);
     }
-    return this.occAdapter.loadAnonymousConsents().pipe(
+    return this.delegate.loadAnonymousConsents().pipe(
       tap((consents) => {
         this.consentsCache = consents;
         this.consentsCachedAt = Date.now();

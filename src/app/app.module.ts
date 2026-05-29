@@ -1,13 +1,17 @@
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { EffectsModule } from "@ngrx/effects";
 import { StoreModule } from "@ngrx/store";
 import { AppRoutingModule } from "@spartacus/storefront";
+import {
+  AnonymousConsentTemplatesAdapter,
+  ConverterService,
+  OccAnonymousConsentTemplatesAdapter,
+  OccEndpointsService,
+} from "@spartacus/core";
 import { AppComponent } from './app.component';
 import { SpartacusModule } from './spartacus/spartacus.module';
-
-import { AnonymousConsentTemplatesAdapter } from "@spartacus/core";
 import { CachingAnonymousConsentTemplatesAdapter } from "./spartacus/adapters/caching-anonymous-consent-templates.adapter";
 
 @NgModule({
@@ -25,7 +29,19 @@ import { CachingAnonymousConsentTemplatesAdapter } from "./spartacus/adapters/ca
   providers: [
     {
       provide: AnonymousConsentTemplatesAdapter,
-      useClass: CachingAnonymousConsentTemplatesAdapter,
+      useFactory: (
+        http: HttpClient,
+        occEndpoints: OccEndpointsService,
+        converter: ConverterService
+      ) => {
+        const occAdapter = new OccAnonymousConsentTemplatesAdapter(
+          http,
+          occEndpoints,
+          converter
+        );
+        return new CachingAnonymousConsentTemplatesAdapter(occAdapter);
+      },
+      deps: [HttpClient, OccEndpointsService, ConverterService],
     },
   ],
   bootstrap: [AppComponent]

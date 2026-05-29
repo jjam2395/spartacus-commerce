@@ -7,6 +7,9 @@ import { AppRoutingModule } from "@spartacus/storefront";
 import { AppComponent } from './app.component';
 import { SpartacusModule } from './spartacus/spartacus.module';
 
+import { AnonymousConsentTemplatesAdapter } from "@spartacus/core";
+import { CachingAnonymousConsentTemplatesAdapter } from "./spartacus/adapters/caching-anonymous-consent-templates.adapter";
+
 @NgModule({
   declarations: [
     AppComponent
@@ -19,7 +22,12 @@ import { SpartacusModule } from './spartacus/spartacus.module';
     EffectsModule.forRoot([]),
     SpartacusModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: AnonymousConsentTemplatesAdapter,
+      useClass: CachingAnonymousConsentTemplatesAdapter,
+    },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -40,6 +40,9 @@ yarn-error.log
 testem.log
 /typings
 
+# Deploy SSH key (manually added to GitHub Secrets — never commit)
+DEPLOY_KEY.txt
+
 # System Files
 .DS_Store
 Thumbs.db

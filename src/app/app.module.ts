@@ -1,18 +1,12 @@
-import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { EffectsModule } from "@ngrx/effects";
 import { StoreModule } from "@ngrx/store";
 import { AppRoutingModule } from "@spartacus/storefront";
-import {
-  AnonymousConsentTemplatesAdapter,
-  ConverterService,
-  OccAnonymousConsentTemplatesAdapter,
-  OccEndpointsService,
-} from "@spartacus/core";
 import { AppComponent } from './app.component';
+import { ConsentTemplatesCacheInterceptor } from "./interceptors/consent-templates-cache.interceptor";
 import { SpartacusModule } from './spartacus/spartacus.module';
-import { CachingAnonymousConsentTemplatesAdapter } from "./spartacus/adapters/caching-anonymous-consent-templates.adapter";
 
 @NgModule({
   declarations: [
@@ -28,20 +22,9 @@ import { CachingAnonymousConsentTemplatesAdapter } from "./spartacus/adapters/ca
   ],
   providers: [
     {
-      provide: AnonymousConsentTemplatesAdapter,
-      useFactory: (
-        http: HttpClient,
-        occEndpoints: OccEndpointsService,
-        converter: ConverterService
-      ) => {
-        const occAdapter = new OccAnonymousConsentTemplatesAdapter(
-          http,
-          occEndpoints,
-          converter
-        );
-        return new CachingAnonymousConsentTemplatesAdapter(occAdapter);
-      },
-      deps: [HttpClient, OccEndpointsService, ConverterService],
+      provide: HTTP_INTERCEPTORS,
+      useClass: ConsentTemplatesCacheInterceptor,
+      multi: true,
     },
   ],
   bootstrap: [AppComponent]

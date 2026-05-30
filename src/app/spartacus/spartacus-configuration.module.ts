@@ -18,7 +18,7 @@ import { defaultCmsContentProviders, layoutConfig, mediaConfig } from "@spartacu
     context: {
       baseSite: ['electronics-spa'],
       currency: ['USD'],
-      language: ['en'],
+      language: ['en', 'ja', 'de', 'zh'],
     },
   }), provideConfig(<I18nConfig>{
     i18n: {

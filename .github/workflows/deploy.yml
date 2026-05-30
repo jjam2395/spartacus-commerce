@@ -22,8 +22,12 @@ jobs:
             export NODE_OPTIONS=--openssl-legacy-provider
             cd /home/ubuntu/projects/dev/spartacus-commerce
             git pull origin "${{ github.ref_name }}"
+            echo "› Writing version file..."
+            echo "export const APP_VERSION = '$(git rev-parse --short HEAD)';" > src/environments/version.ts
+            echo "export const APP_BRANCH = '$(git rev-parse --abbrev-ref HEAD)';" >> src/environments/version.ts
+            echo "export const APP_DATE = '$(date -u '+%Y-%m-%d %H:%M UTC')';" >> src/environments/version.ts
             npm run build
-            echo "Copying build to nginx serve directory..."
+            echo "› Copying build to nginx serve directory..."
             sudo rm -rf /var/www/spartacus/*
             sudo cp -r dist/spartacus-commerce/* /var/www/spartacus/
             sudo nginx -s reload || sudo systemctl reload nginx || true

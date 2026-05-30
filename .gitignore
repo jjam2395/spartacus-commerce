@@ -43,6 +43,9 @@ testem.log
 # Deploy SSH key (manually added to GitHub Secrets — never commit)
 DEPLOY_KEY.txt
 
+# Auto-generated version file (created by deploy workflow)
+/src/environments/version.ts
+
 # System Files
 .DS_Store
 Thumbs.db

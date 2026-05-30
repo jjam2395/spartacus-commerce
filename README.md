@@ -1,27 +1,110 @@
-# SpartacusCommerce
+# Spartacus Commerce — Spartacus 4.3.8 (Angular 12)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.18.
+Storefront SAP Commerce Cloud con **Spartacus 4.3.8** y **Angular 12**. Proyecto de práctica y portafolio para certificación SAP Commerce Cloud + Spartacus.
 
-## Development server
+## 📦 Tech Stack
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+| Capa | Tecnología |
+|------|------------|
+| **Frontend** | Angular 12, Spartacus 4.3.8 |
+| **UI/Styles** | Bootstrap 4, SCSS |
+| **State** | NgRx Store + Effects |
+| **Backend** | SAP Commerce Cloud (OCC API) |
+| **Servidor** | Nginx (proxy reverso) |
+| **DNS** | DuckDNS (spartacuscommerce.duckdns.org) |
+| **CI/CD** | GitHub Actions (auto-deploy en push a `main` o `development`) |
 
-## Code scaffolding
+## 🌐 Acceso
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+| URL | Puerto |
+|-----|--------|
+| **Producción** | `http://spartacuscommerce.duckdns.org:8080` |
+| **Local** | `http://localhost:4200` (`ng serve`) |
 
-## Build
+> ⚠️ No hay SSL configurado — solo HTTP.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## 🚀 Deploy automático
 
-## Running unit tests
+Cada `git push` a `main` o `development` dispara un workflow de GitHub Actions que:
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+1. **SSH** al VPS
+2. **git pull** del branch
+3. **Genera** `src/environments/version.ts` con el commit hash, branch y fecha
+4. **npm run build** (con `--openssl-legacy-provider`)
+5. **Copia** los archivos compilados a `/var/www/spartacus/`
+6. **nginx -s reload**
 
-## Running end-to-end tests
+### Verificar versión desplegada
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+Abrir DevTools (F12) → Consola:
 
-## Further help
+```
+⚡ Spartacus Commerce v a05efa3 | branch: development 2026-05-29 07:22 UTC
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## 🧩 Personalizaciones
+
+### Consent Templates Cache (HTTP Interceptor)
+
+Spartacus 4.x hace peticiones constantes a `consenttemplates` (hasta 129 requests en 30s).  
+Se implementó un **HTTP Interceptor** que cachea las respuestas por 5 minutos:
+
+- **Archivo**: `src/app/interceptors/consent-templates-cache.interceptor.ts`
+- **Cobertura**: Anónimo (`users/anonymous/consenttemplates`) + Autenticado (`users/{userId}/consenttemplates`)
+- **TTL**: 5 minutos (configurable en `this.TTL`)
+- **Logs**: Muestra `[ConsentTemplatesCache] HIT/MISS/CACHED` en consola
+
+### Spartacus Theming (SCSS)
+
+Personalización de estilos Spartacus 4.x con Bootstrap 4 variables:
+
+- Uso de `$primary`, `$secondary` en vez de prefijos `$cx-color-*`
+- Variables definidas ANTES del `@import` de Bootstrap
+- Dark mode parcial (header oscuro + gold accents + body claro)
+
+## 🧪 Development
+
+```bash
+npm install
+ng serve                          # Dev server :4200
+npm run build                     # Producción
+ng generate component MiComponente
+```
+
+Para build local con la versión:
+
+```bash
+echo "export const APP_VERSION = '$(git rev-parse --short HEAD)';" > src/environments/version.ts
+echo "export const APP_BRANCH = '$(git rev-parse --abbrev-ref HEAD)';" >> src/environments/version.ts
+echo "export const APP_DATE = '$(date -u '+%Y-%m-%d %H:%M UTC')';" >> src/environments/version.ts
+npm run build
+```
+
+## 🔧 Nginx Config
+
+El servidor sirve desde `/var/www/spartacus/` con proxy reverso a SAP Commerce:
+
+```
+→ /occ/*   → https://composable-storefront-demo.eastus.cloudapp.azure.com:8443
+→ /*       → /var/www/spartacus/index.html (SPA fallback)
+```
+
+## 📁 Estructura relevante
+
+```
+src/
+├── app/
+│   ├── interceptors/
+│   │   └── consent-templates-cache.interceptor.ts
+│   ├── spartacus/
+│   │   ├── adapters/         (deprecated — ver interceptor)
+│   │   ├── spartacus-configuration.module.ts
+│   │   └── spartacus-features.module.ts
+│   └── app.module.ts
+├── environments/
+│   └── version.ts            (auto-generado por CI)
+```
+
+## 📄 Licencia
+
+Proyecto personal con fines educativos y de portafolio.

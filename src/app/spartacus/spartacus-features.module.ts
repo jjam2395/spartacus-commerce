@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
-import { AnonymousConsentsModule, AuthModule, CartModule, CartOccModule, CostCenterOccModule, ExternalRoutesModule, OrderOccModule, ProductModule, ProductOccModule, UserOccTransitional_4_2_Module, UserTransitional_4_2_Module } from "@spartacus/core";
-import { AddressBookModule, AnonymousConsentManagementBannerModule, AnonymousConsentsDialogModule, BannerCarouselModule, BannerModule, BreadcrumbModule, CartComponentModule, CartPageEventModule, CategoryNavigationModule, CmsParagraphModule, ConsentManagementModule, FooterNavigationModule, HamburgerMenuModule, HomePageEventModule, LinkModule, LoginRouteModule, LogoutModule, MyCouponsModule, MyInterestsModule, NavigationEventModule, NavigationModule, NotificationPreferenceModule, PaymentMethodsModule, ProductCarouselModule, ProductDetailsPageModule, ProductFacetNavigationModule, ProductImagesModule, ProductIntroModule, ProductListingPageModule, ProductListModule, ProductPageEventModule, ProductReferencesModule, ProductSummaryModule, ProductTabsModule, SearchBoxModule, SiteContextSelectorModule, StockNotificationModule, TabParagraphContainerModule, WishListModule } from "@spartacus/storefront";
+import { AnonymousConsentsModule, AuthModule, CartModule, CartOccModule, CostCenterOccModule, CmsConfig, ExternalRoutesModule, OrderOccModule, ProductModule, ProductOccModule, UserOccTransitional_4_2_Module, UserTransitional_4_2_Module, provideConfig } from "@spartacus/core";
+import { AddressBookModule, AnonymousConsentManagementBannerModule, AnonymousConsentsDialogModule, BannerCarouselModule, BannerModule, BreadcrumbModule, CartComponentModule, CartPageEventModule, CategoryNavigationModule, CmsParagraphModule, ConsentManagementModule, FooterNavigationModule, HamburgerMenuModule, HomePageEventModule, LinkModule, LoginRouteModule, LogoutModule, MyCouponsModule, MyInterestsModule, NavigationEventModule, NavigationModule, NotificationPreferenceModule, PaymentMethodsModule, ProductDetailsPageModule, ProductListingPageModule, ProductPageEventModule, SearchBoxModule, SiteContextSelectorModule, StockNotificationModule, TabParagraphContainerModule, WishListModule } from "@spartacus/storefront";
 import { UserFeatureModule } from './features/user/user-feature.module';
 import { StoreFinderFeatureModule } from './features/storefinder/store-finder-feature.module';
 import { SmartEditFeatureModule } from './features/smartedit/smart-edit-feature.module';
@@ -8,6 +8,7 @@ import { ProductVariantsFeatureModule } from './features/product/product-variant
 import { ProductImageZoomFeatureModule } from './features/product/product-image-zoom-feature.module';
 import { OrderFeatureModule } from './features/order/order-feature.module';
 import { CheckoutFeatureModule } from './features/checkout/checkout-feature.module';
+import { PRODUCT_CMS_FEATURE, PRODUCT_CMS_CMS_COMPONENTS } from './features/product-cms/product-cms-feature-config';
 
 @NgModule({
   declarations: [],
@@ -47,18 +48,11 @@ import { CheckoutFeatureModule } from './features/checkout/checkout-feature.modu
     // Product Core,
     ProductModule.forRoot(),
     ProductOccModule,
-    // Product UI,
+    // Product UI (route modules - eager),
     ProductDetailsPageModule,
     ProductListingPageModule,
-    ProductListModule,
     SearchBoxModule,
-    ProductFacetNavigationModule,
-    ProductTabsModule,
-    ProductCarouselModule,
-    ProductReferencesModule,
-    ProductImagesModule,
-    ProductSummaryModule,
-    ProductIntroModule,
+    // Product UI (CMS components - lazy via ProductCmsFeatureModule),
     // Cart Core,
     CartModule.forRoot(),
     CartOccModule,
@@ -82,6 +76,19 @@ import { CheckoutFeatureModule } from './features/checkout/checkout-feature.modu
     ProductImageZoomFeatureModule,
     OrderFeatureModule,
     CheckoutFeatureModule,
-  ]
+  ],
+  providers: [
+    provideConfig(<CmsConfig>{
+      featureModules: {
+        [PRODUCT_CMS_FEATURE]: {
+          module: () =>
+            import('./features/product-cms/product-cms-feature.module').then(
+              (m) => m.ProductCmsFeatureModule
+            ),
+          cmsComponents: PRODUCT_CMS_CMS_COMPONENTS,
+        },
+      },
+    }),
+  ],
 })
 export class SpartacusFeaturesModule { }

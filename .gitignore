@@ -43,8 +43,8 @@ testem.log
 # Deploy SSH key (manually added to GitHub Secrets — never commit)
 DEPLOY_KEY.txt
 
-# Auto-generated version file (created by deploy workflow)
-/src/environments/version.ts
+# Auto-generated version file content (overwritten by deploy workflow)
+# Tracked in repo to allow ng serve in local dev
 
 # System Files
 .DS_Store

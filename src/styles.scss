@@ -1,5 +1,32 @@
 /* You can add global styles to this file, and also import other style files */
 
+// 🎨 GoolPxl Brand Theme — hybrid approach
+// Gold accents on professional clean background
+// (Spartacus 4.x is Bootstrap-based, full dark mode isn't practical)
+$primary: #d4af37;       // Gold — main brand color
+$secondary: #b8860b;     // Dark goldenrod — hover/accent
+$success: #1a5d3a;       // Dark green
+// Keep light backgrounds for readability
+$text: #212738;           // Dark text for readability
+$background: #f4f4f4;    // Light page background
+$inverse: #ffffff;       // White cards/body
+$light: #e8e8e8;         // Light borders
+$dark: #1a1a2e;          // Dark for headers/footers
+
 $styleVersion: 4.3;
 @import '~@spartacus/styles/index';
-$cx-color-primary: #0ea5e9;
+
+// Extra tweaks after Spartacus import
+// Gold hover on buttons
+.btn-primary:hover {
+  background-color: $secondary !important;
+  border-color: $secondary !important;
+}
+// Dark header banner with gold text
+header {
+  .cx-site-context,
+  .cx-hamburger,
+  a {
+    color: #d4af37 !important;
+  }
+}
